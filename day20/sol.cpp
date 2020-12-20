@@ -111,80 +111,51 @@ vector<string> split(string s, char dim) {
     return res;
 }
 
-long ans = 0;
-int c = 0;
-vector<int> nums;
-void dfs(vector<int>& curr, int j) {
-	if (curr.back() == nums.back()) {
-		ans += 1;
-		if (ans > pow(10, c)) {
-			ps(ans);
-			c += 1;
-		}
-		return;
-	}
-	for (int k = 1; k <= 3; k++) {
-		for (int i = j; i < nums.size(); i++) {
-			if (nums[i] == curr.back() + k) {
-				curr.push_back(nums[i]);
-				dfs(curr, i + 1);
-				curr.pop_back();
-			}
-		}
-	}
-}
+long inv(long a, long m) { 
+  long m0 = m, t, q; 
+  long x0 = 0, x1 = 1; 
 
-long inv(long a, long m) 
-{ 
-    long m0 = m, t, q; 
-    long x0 = 0, x1 = 1; 
+  if (m == 1) return 0; 
+
+  // Apply extended Euclid Algorithm 
+  while (a > 1) { 
+    // q is quotient 
+    q = a / m; 
+
+    t = m; 
+
+    // m is remainder now, process same as 
+    // euclid's algo 
+    m = a % m, a = t; 
+
+    t = x0; 
+
+    x0 = x1 - q * x0; 
+
+    x1 = t; 
+  } 
   
-    if (m == 1) 
-       return 0; 
-  
-    // Apply extended Euclid Algorithm 
-    while (a > 1) 
-    { 
-        // q is quotient 
-        q = a / m; 
-  
-        t = m; 
-  
-        // m is remainder now, process same as 
-        // euclid's algo 
-        m = a % m, a = t; 
-  
-        t = x0; 
-  
-        x0 = x1 - q * x0; 
-  
-        x1 = t; 
-    } 
-  
-    // Make x1 positive 
-    if (x1 < 0) 
-       x1 += m0; 
-  
-    return x1; 
+  // Make x1 positive 
+  if (x1 < 0) x1 += m0; 
+
+  return x1; 
 } 
 
-long long mul_inv(long long a, long long b)
-{
+long long mul_inv(long long a, long long b){
 	long long b0{ b }, t{ 0 }, q{ 0 };
 	long long x0{ 0 }, x1{ 1 };
 
-	if (b == 1)
-	{
+	if (b == 1) {
 		return 1;
 	}
-	while (a > 1) 
-	{
+
+	while (a > 1) {
 		q = a / b;
 		t = b, b = a % b, a = t;
 		t = x0, x0 = x1 - q * x0, x1 = t;
 	}
-	if (x1 < 0)
-	{
+
+	if (x1 < 0) {
 		x1 += b0;
 	}
 
@@ -198,8 +169,7 @@ long long chinese_remainder(const std::vector<long long>& n, const std::vector<l
 		prod *= n[i];
 	}
 
-	for (i = 0; i < lenght; i++) 
-	{
+	for (i = 0; i < lenght; i++) {
 		p = prod / n[i];
 		sum += a[i] * mul_inv(p, n[i]) * p;
 	}
@@ -207,15 +177,13 @@ long long chinese_remainder(const std::vector<long long>& n, const std::vector<l
 	return sum % prod;
 }
 
-string trim(const string& str)
-{
-    size_t first = str.find_first_not_of(' ');
-    if (string::npos == first)
-    {
-        return str;
-    }
-    size_t last = str.find_last_not_of(' ');
-    return str.substr(first, (last - first + 1));
+string trim(const string& str) {
+  size_t first = str.find_first_not_of(' ');
+  if (string::npos == first) {
+    return str;
+  }
+  size_t last = str.find_last_not_of(' ');
+  return str.substr(first, (last - first + 1));
 }
 
 vector<string> flip1(vector<string>& mat) {
@@ -403,16 +371,16 @@ int main() {
 	for (auto& t : tiles) {
 		auto& tile = t.second;
 		int id = t.first;
-		set<vector<string>> arr;
+		set<vector<string>> variations;
 		for (int l = 0; l < 4; l++) {
-			auto f1 = flip1(tile);
-			auto f2 = flip2(tile);
-			arr.insert(tile);
-			arr.insert(f1);
-			arr.insert(f2);
+			auto var1 = flip1(tile);
+			auto var2 = flip2(tile);
+			variations.insert(tile);
+			variations.insert(var1);
+			variations.insert(var2);
 			tile = rotate(tile);
 		}
-		tileVariations[id] = vector<vector<string>>(arr.begin(), arr.end());
+		tileVariations[id] = vector<vector<string>>(variations.begin(), variations.end());
 	}
 	dfs(0, 0);
 
